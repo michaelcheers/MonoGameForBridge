@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,12 +29,29 @@ namespace MonoGameForBridge
             base.LoadContent();
         }
 
+        Vector2 pos = new Vector2(10, 10);
+
         protected override void Draw(GameTime gameTime)
         {
+            GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
-            spriteBatch.Draw(image, new Vector2(10, 10), Color.White);
+            spriteBatch.Draw(image, pos, Color.White);
             spriteBatch.End();
             base.Draw(gameTime);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            var state = Keyboard.GetState();
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Right))
+                pos.X++;
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Left))
+                pos.X--;
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Down))
+                pos.Y++;
+            if (state.IsKeyDown(Microsoft.Xna.Framework.Input.Keys.Up))
+                pos.Y--;
+            base.Update(gameTime);
         }
 
         #region IDisposable Support
