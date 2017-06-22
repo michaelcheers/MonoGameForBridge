@@ -279,12 +279,12 @@ namespace Microsoft.Xna.Framework
 
         public static void CreateMerged(ref BoundingBox original, ref BoundingBox additional, out BoundingBox result)
         {
-            result.Min.X = NewMath.Min(original.Min.X, additional.Min.X);
-            result.Min.Y = NewMath.Min(original.Min.Y, additional.Min.Y);
-            result.Min.Z = NewMath.Min(original.Min.Z, additional.Min.Z);
-            result.Max.X = NewMath.Max(original.Max.X, additional.Max.X);
-            result.Max.Y = NewMath.Max(original.Max.Y, additional.Max.Y);
-            result.Max.Z = NewMath.Max(original.Max.Z, additional.Max.Z);
+            result.Min.X = _Math.Min(original.Min.X, additional.Min.X);
+            result.Min.Y = _Math.Min(original.Min.Y, additional.Min.Y);
+            result.Min.Z = _Math.Min(original.Min.Z, additional.Min.Z);
+            result.Max.X = _Math.Max(original.Max.X, additional.Max.X);
+            result.Max.Y = _Math.Max(original.Max.Y, additional.Max.Y);
+            result.Max.Z = _Math.Max(original.Max.Z, additional.Max.Z);
         }
 
         public bool Equals(BoundingBox other)

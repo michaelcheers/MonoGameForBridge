@@ -11,15 +11,21 @@ namespace Microsoft.Xna.Framework.Graphics
     {
         internal Canvas @internal;
         internal Game game;
+        public List<GraphicsDeviceManager> graphicsDeviceManagers = new List<GraphicsDeviceManager>();
 
         internal GraphicsDevice (Game game)
         {
-
+            this.game = game;
         }
 
-        public void Init ()
+        internal void Init ()
         {
-
+            var first = graphicsDeviceManagers.First();
+            @internal = new Canvas
+            {
+                Width = first.PreferredBackBufferWidth,
+                Height = first.PreferredBackBufferHeight
+            };
         }
     }
 }

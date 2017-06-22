@@ -13,7 +13,7 @@ namespace Microsoft.Xna.Framework.Content
         public string RootDirectory { get; set; } = "Content";
         internal Game @internal;
         internal ContentManager() { }
-        Dictionary<string, Texture2D> images;
+        Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
 
         public T Load<T> (string value)
         {

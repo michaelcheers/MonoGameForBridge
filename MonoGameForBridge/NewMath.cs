@@ -1,12 +1,11 @@
 ﻿using Bridge;
-
 #pragma warning disable CS0626
-//#2815
+
 namespace System
 {
     [External]
     [Name("Math")]
-    public static class NewMath
+    public static class _Math
     {
         [Convention]
         public const double E = 2.7182818284590452354;
@@ -14,17 +13,21 @@ namespace System
         [Convention]
         public const double PI = 3.14159265358979323846;
 
-        public static extern int Abs(int x);
+        public static extern int Abs(int value);
 
-        public static extern double Abs(double x);
+        public static extern float Abs(float value);
 
-        public static extern float Abs(float x);
+        public static extern double Abs(double value);
 
-        [Template("{l}.abs()")]
-        public static extern long Abs(long l);
+        [Template("{0}.abs()")]
+        public static extern long Abs(long value);
 
-        [Template("{l}.abs()")]
-        public static extern decimal Abs(decimal l);
+        [Template("{0}.abs()")]
+        public static extern decimal Abs(decimal value);
+
+        public static extern short Abs(short value);
+
+        public static extern sbyte Abs(sbyte value);
 
         /// <summary>
         /// Returns the larger of two 8-bit unsigned integers.

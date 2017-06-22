@@ -376,7 +376,7 @@ namespace Microsoft.Xna.Framework
         public static float Distance(Vector2 value1, Vector2 value2)
         {
             float v1 = value1.X - value2.X, v2 = value1.Y - value2.Y;
-            return (float)NewMath.Sqrt((v1 * v1) + (v2 * v2));
+            return (float)_Math.Sqrt((v1 * v1) + (v2 * v2));
         }
 
         /// <summary>
@@ -388,7 +388,7 @@ namespace Microsoft.Xna.Framework
         public static void Distance(ref Vector2 value1, ref Vector2 value2, out float result)
         {
             float v1 = value1.X - value2.X, v2 = value1.Y - value2.Y;
-            result = (float)NewMath.Sqrt((v1 * v1) + (v2 * v2));
+            result = (float)_Math.Sqrt((v1 * v1) + (v2 * v2));
         }
 
         /// <summary>
@@ -561,7 +561,7 @@ namespace Microsoft.Xna.Framework
         /// <returns>The length of this <see cref="Vector2"/>.</returns>
         public float Length()
         {
-            return (float)NewMath.Sqrt((X * X) + (Y * Y));
+            return (float)_Math.Sqrt((X * X) + (Y * Y));
         }
 
         /// <summary>
@@ -759,7 +759,7 @@ namespace Microsoft.Xna.Framework
         /// </summary>
         public void Normalize()
         {
-            float val = 1.0f / (float)NewMath.Sqrt((X * X) + (Y * Y));
+            float val = 1.0f / (float)_Math.Sqrt((X * X) + (Y * Y));
             X *= val;
             Y *= val;
         }
@@ -771,7 +771,7 @@ namespace Microsoft.Xna.Framework
         /// <returns>Unit vector.</returns>
         public static Vector2 Normalize(Vector2 value)
         {
-            float val = 1.0f / (float)NewMath.Sqrt((value.X * value.X) + (value.Y * value.Y));
+            float val = 1.0f / (float)_Math.Sqrt((value.X * value.X) + (value.Y * value.Y));
             value.X *= val;
             value.Y *= val;
             return value;
@@ -784,7 +784,7 @@ namespace Microsoft.Xna.Framework
         /// <param name="result">Unit vector as an output parameter.</param>
         public static void Normalize(ref Vector2 value, out Vector2 result)
         {
-            float val = 1.0f / (float)NewMath.Sqrt((value.X * value.X) + (value.Y * value.Y));
+            float val = 1.0f / (float)_Math.Sqrt((value.X * value.X) + (value.Y * value.Y));
             result.X = value.X * val;
             result.Y = value.Y * val;
         }

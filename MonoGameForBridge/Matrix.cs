@@ -490,7 +490,7 @@ namespace Microsoft.Xna.Framework
             }
             else
             {
-                Vector3.Multiply(ref vector, (float)(1f / ((float)NewMath.Sqrt((double)num))), out vector);
+                Vector3.Multiply(ref vector, (float)(1f / ((float)_Math.Sqrt((double)num))), out vector);
             }
             Vector3.Cross(ref cameraUpVector, ref vector, out vector3);
             vector3.Normalize();
@@ -557,26 +557,26 @@ namespace Microsoft.Xna.Framework
 		    }
 		    else
 		    {
-		        Vector3.Multiply(ref vector2, (float) (1f / ((float) NewMath.Sqrt((double) num2))), out vector2);
+		        Vector3.Multiply(ref vector2, (float) (1f / ((float) _Math.Sqrt((double) num2))), out vector2);
 		    }
 		    Vector3 vector4 = rotateAxis;
 		    Vector3.Dot(ref rotateAxis, ref vector2, out num);
-		    if (NewMath.Abs(num) > 0.9982547f)
+		    if (_Math.Abs(num) > 0.9982547f)
 		    {
 		        if (objectForwardVector.HasValue)
 		        {
 		            vector = objectForwardVector.Value;
 		            Vector3.Dot(ref rotateAxis, ref vector, out num);
-		            if (NewMath.Abs(num) > 0.9982547f)
+		            if (_Math.Abs(num) > 0.9982547f)
 		            {
 		                num = ((rotateAxis.X * Vector3.Forward.X) + (rotateAxis.Y * Vector3.Forward.Y)) + (rotateAxis.Z * Vector3.Forward.Z);
-		                vector = (NewMath.Abs(num) > 0.9982547f) ? Vector3.Right : Vector3.Forward;
+		                vector = (_Math.Abs(num) > 0.9982547f) ? Vector3.Right : Vector3.Forward;
 		            }
 		        }
 		        else
 		        {
 		            num = ((rotateAxis.X * Vector3.Forward.X) + (rotateAxis.Y * Vector3.Forward.Y)) + (rotateAxis.Z * Vector3.Forward.Z);
-		            vector = (NewMath.Abs(num) > 0.9982547f) ? Vector3.Right : Vector3.Forward;
+		            vector = (_Math.Abs(num) > 0.9982547f) ? Vector3.Right : Vector3.Forward;
 		        }
 		        Vector3.Cross(ref rotateAxis, ref vector, out vector3);
 		        vector3.Normalize();
@@ -633,8 +633,8 @@ namespace Microsoft.Xna.Framework
             float x = axis.X;
 		    float y = axis.Y;
 		    float z = axis.Z;
-		    float num2 = (float) NewMath.Sin((double) angle);
-		    float num = (float) NewMath.Cos((double) angle);
+		    float num2 = (float) _Math.Sin((double) angle);
+		    float num = (float) _Math.Cos((double) angle);
 		    float num11 = x * x;
 		    float num10 = y * y;
 		    float num9 = z * z;
@@ -967,7 +967,7 @@ namespace Microsoft.Xna.Framework
 		    {
 		        throw new ArgumentException("nearPlaneDistance >= farPlaneDistance");
 		    }
-		    float num = 1f / ((float) NewMath.Tan((double) (fieldOfView * 0.5f)));
+		    float num = 1f / ((float) _Math.Tan((double) (fieldOfView * 0.5f)));
 		    float num9 = num / aspectRatio;
 		    result.M11 = num9;
 		    result.M12 = result.M13 = result.M14 = 0;
@@ -1067,8 +1067,8 @@ namespace Microsoft.Xna.Framework
         {
             result = Matrix.Identity;
 
-			var val1 = (float)NewMath.Cos(radians);
-			var val2 = (float)NewMath.Sin(radians);
+			var val1 = (float)_Math.Cos(radians);
+			var val2 = (float)_Math.Sin(radians);
 			
             result.M22 = val1;
             result.M23 = val2;
@@ -1097,8 +1097,8 @@ namespace Microsoft.Xna.Framework
         {
             result = Matrix.Identity;
 
-            var val1 = (float)NewMath.Cos(radians);
-			var val2 = (float)NewMath.Sin(radians);
+            var val1 = (float)_Math.Cos(radians);
+			var val2 = (float)_Math.Sin(radians);
 			
             result.M11 = val1;
             result.M13 = -val2;
@@ -1127,8 +1127,8 @@ namespace Microsoft.Xna.Framework
         {
             result = Matrix.Identity;
 
-			var val1 = (float)NewMath.Cos(radians);
-			var val2 = (float)NewMath.Sin(radians);
+			var val1 = (float)_Math.Cos(radians);
+			var val2 = (float)_Math.Sin(radians);
 			
             result.M11 = val1;
             result.M12 = val2;
@@ -1458,13 +1458,13 @@ namespace Microsoft.Xna.Framework
             translation.Y = this.M42;
             translation.Z = this.M43;
 
-            float xs = (NewMath.Sign(M11 * M12 * M13 * M14) < 0) ? -1 : 1;
-            float ys = (NewMath.Sign(M21 * M22 * M23 * M24) < 0) ? -1 : 1;
-            float zs = (NewMath.Sign(M31 * M32 * M33 * M34) < 0) ? -1 : 1;
+            float xs = (_Math.Sign(M11 * M12 * M13 * M14) < 0) ? -1 : 1;
+            float ys = (_Math.Sign(M21 * M22 * M23 * M24) < 0) ? -1 : 1;
+            float zs = (_Math.Sign(M31 * M32 * M33 * M34) < 0) ? -1 : 1;
 
-            scale.X = xs * (float)NewMath.Sqrt(this.M11 * this.M11 + this.M12 * this.M12 + this.M13 * this.M13);
-            scale.Y = ys * (float)NewMath.Sqrt(this.M21 * this.M21 + this.M22 * this.M22 + this.M23 * this.M23);
-            scale.Z = zs * (float)NewMath.Sqrt(this.M31 * this.M31 + this.M32 * this.M32 + this.M33 * this.M33);
+            scale.X = xs * (float)_Math.Sqrt(this.M11 * this.M11 + this.M12 * this.M12 + this.M13 * this.M13);
+            scale.Y = ys * (float)_Math.Sqrt(this.M21 * this.M21 + this.M22 * this.M22 + this.M23 * this.M23);
+            scale.Z = zs * (float)_Math.Sqrt(this.M31 * this.M31 + this.M32 * this.M32 + this.M33 * this.M33);
 
             if (scale.X == 0.0 || scale.Y == 0.0 || scale.Z == 0.0)
             {

@@ -60,7 +60,7 @@ namespace Microsoft.Xna.Framework
 
             float? tMin = null, tMax = null;
 
-            if (NewMath.Abs(Direction.X) < Epsilon)
+            if (_Math.Abs(Direction.X) < Epsilon)
             {
                 if (Position.X < box.Min.X || Position.X > box.Max.X)
                     return null;
@@ -78,7 +78,7 @@ namespace Microsoft.Xna.Framework
                 }
             }
 
-            if (NewMath.Abs(Direction.Y) < Epsilon)
+            if (_Math.Abs(Direction.Y) < Epsilon)
             {
                 if (Position.Y < box.Min.Y || Position.Y > box.Max.Y)
                     return null;
@@ -102,7 +102,7 @@ namespace Microsoft.Xna.Framework
                 if (!tMax.HasValue || tMaxY < tMax) tMax = tMaxY;
             }
 
-            if (NewMath.Abs(Direction.Z) < Epsilon)
+            if (_Math.Abs(Direction.Z) < Epsilon)
             {
                 if (Position.Z < box.Min.Z || Position.Z > box.Max.Z)
                     return null;
@@ -172,7 +172,7 @@ namespace Microsoft.Xna.Framework
         public void Intersects(ref Plane plane, out float? result)
         {
             var den = Vector3.Dot(Direction, plane.Normal);
-            if (NewMath.Abs(den) < 0.00001f)
+            if (_Math.Abs(den) < 0.00001f)
             {
                 result = null;
                 return;
@@ -225,7 +225,7 @@ namespace Microsoft.Xna.Framework
             // if x^2 + z^2 - y^2 < 0, we do not intersect
             float dist = sphereRadiusSquared + distanceAlongRay * distanceAlongRay - differenceLengthSquared;
 
-            result = (dist < 0) ? null : distanceAlongRay - (float?)NewMath.Sqrt(dist);
+            result = (dist < 0) ? null : distanceAlongRay - (float?)_Math.Sqrt(dist);
         }
 
 

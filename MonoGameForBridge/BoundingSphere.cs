@@ -353,7 +353,7 @@ namespace Microsoft.Xna.Framework
                 float sqDist = diff.LengthSquared();
                 if (sqDist > sqRadius)
                 {
-                    float distance = (float)NewMath.Sqrt(sqDist); // equal to diff.Length();
+                    float distance = (float)_Math.Sqrt(sqDist); // equal to diff.Length();
                     Vector3 direction = diff / distance;
                     Vector3 G = center - radius * direction;
                     center = (G + pt) / 2;
@@ -402,8 +402,8 @@ namespace Microsoft.Xna.Framework
                 }
             }
             //else find center of new sphere and radius
-            float leftRadius = NewMath.Max(original.Radius - distance, additional.Radius);
-            float Rightradius = NewMath.Max(original.Radius + distance, additional.Radius);
+            float leftRadius = _Math.Max(original.Radius - distance, additional.Radius);
+            float Rightradius = _Math.Max(original.Radius + distance, additional.Radius);
             ocenterToaCenter = ocenterToaCenter + (((leftRadius - Rightradius) / (2 * ocenterToaCenter.Length())) * ocenterToaCenter);//oCenterToResultCenter
 
             result = new BoundingSphere();
@@ -581,7 +581,7 @@ namespace Microsoft.Xna.Framework
         {
             BoundingSphere sphere = new BoundingSphere();
             sphere.Center = Vector3.Transform(this.Center, matrix);
-            sphere.Radius = this.Radius * ((float)NewMath.Sqrt((double)NewMath.Max(((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12)) + (matrix.M13 * matrix.M13), NewMath.Max(((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22)) + (matrix.M23 * matrix.M23), ((matrix.M31 * matrix.M31) + (matrix.M32 * matrix.M32)) + (matrix.M33 * matrix.M33)))));
+            sphere.Radius = this.Radius * ((float)_Math.Sqrt((double)_Math.Max(((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12)) + (matrix.M13 * matrix.M13), _Math.Max(((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22)) + (matrix.M23 * matrix.M23), ((matrix.M31 * matrix.M31) + (matrix.M32 * matrix.M32)) + (matrix.M33 * matrix.M33)))));
             return sphere;
         }
 
@@ -593,7 +593,7 @@ namespace Microsoft.Xna.Framework
         public void Transform(ref Matrix matrix, out BoundingSphere result)
         {
             result.Center = Vector3.Transform(this.Center, matrix);
-            result.Radius = this.Radius * ((float)NewMath.Sqrt((double)NewMath.Max(((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12)) + (matrix.M13 * matrix.M13), NewMath.Max(((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22)) + (matrix.M23 * matrix.M23), ((matrix.M31 * matrix.M31) + (matrix.M32 * matrix.M32)) + (matrix.M33 * matrix.M33)))));
+            result.Radius = this.Radius * ((float)_Math.Sqrt((double)_Math.Max(((matrix.M11 * matrix.M11) + (matrix.M12 * matrix.M12)) + (matrix.M13 * matrix.M13), _Math.Max(((matrix.M21 * matrix.M21) + (matrix.M22 * matrix.M22)) + (matrix.M23 * matrix.M23), ((matrix.M31 * matrix.M31) + (matrix.M32 * matrix.M32)) + (matrix.M33 * matrix.M33)))));
         }
 
         #endregion

@@ -9,6 +9,8 @@ namespace Microsoft.Xna.Framework.Graphics
     public class Texture2D
     {
         internal Bridge.Html5.HTMLImageElement @internal;
+        public int Width => @internal.NaturalWidth;
+        public int Height => @internal.NaturalHeight;
         internal Texture2D(Bridge.Html5.HTMLImageElement @internal)
         {
             this.@internal = @internal;

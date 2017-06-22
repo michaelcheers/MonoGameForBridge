@@ -54,11 +54,14 @@ namespace Microsoft.Xna.Framework
             set { this._postLoop = value; }
         }
 
+
         /// <summary>
         /// The collection of curve keys.
         /// </summary>
-        
+
+#pragma warning disable CS0108 // Member hides inherited member; missing new keyword
         public CurveKeyCollection Keys
+#pragma warning restore CS0108 // Member hides inherited member; missing new keyword
         {
             get { return this._keys; }
         }
@@ -263,7 +266,7 @@ namespace Microsoft.Xna.Framework
                     break;
                 case CurveTangent.Smooth:
                     var pn = p1 - p0;
-                    if (NewMath.Abs(pn) < float.Epsilon)
+                    if (_Math.Abs(pn) < float.Epsilon)
                         key.TangentIn = 0;
                     else
                         key.TangentIn = (v1 - v0) * ((p - p0) / pn);
@@ -279,11 +282,12 @@ namespace Microsoft.Xna.Framework
                     key.TangentOut = v1 - v;
                     break;
                 case CurveTangent.Smooth:
-                    var pn = p1 - p0;
-                    if (NewMath.Abs(pn) < float.Epsilon)
+                    //Workaround for #2847. Bridge 16.0. Change back to pn as variable name.
+                    var pn2 = p1 - p0;
+                    if (_Math.Abs(pn2) < float.Epsilon)
                         key.TangentOut = 0;
                     else
-                        key.TangentOut = (v1 - v0) * ((p1 - p) / pn);
+                        key.TangentOut = (v1 - v0) * ((p1 - p) / pn2);
                     break;
             }
         }

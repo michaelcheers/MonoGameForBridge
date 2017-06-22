@@ -426,10 +426,10 @@ namespace Microsoft.Xna.Framework
         {
             if (value1.Intersects(value2))
             {
-                int right_side = NewMath.Min(value1.X + value1.Width, value2.X + value2.Width);
-                int left_side = NewMath.Max(value1.X, value2.X);
-                int top_side = NewMath.Max(value1.Y, value2.Y);
-                int bottom_side = NewMath.Min(value1.Y + value1.Height, value2.Y + value2.Height);
+                int right_side = _Math.Min(value1.X + value1.Width, value2.X + value2.Width);
+                int left_side = _Math.Max(value1.X, value2.X);
+                int top_side = _Math.Max(value1.Y, value2.Y);
+                int bottom_side = _Math.Min(value1.Y + value1.Height, value2.Y + value2.Height);
                 result = new Rectangle(left_side, top_side, right_side - left_side, bottom_side - top_side);
             }
             else
@@ -498,11 +498,11 @@ namespace Microsoft.Xna.Framework
         /// <returns>The union of the two rectangles.</returns>
         public static Rectangle Union(Rectangle value1, Rectangle value2)
         {
-            int x = NewMath.Min(value1.X, value2.X);
-            int y = NewMath.Min(value1.Y, value2.Y);
+            int x = _Math.Min(value1.X, value2.X);
+            int y = _Math.Min(value1.Y, value2.Y);
             return new Rectangle(x, y,
-                                 NewMath.Max(value1.Right, value2.Right) - x,
-                                     NewMath.Max(value1.Bottom, value2.Bottom) - y);
+                                 _Math.Max(value1.Right, value2.Right) - x,
+                                     _Math.Max(value1.Bottom, value2.Bottom) - y);
         }
 
         /// <summary>
@@ -513,10 +513,10 @@ namespace Microsoft.Xna.Framework
         /// <param name="result">The union of the two rectangles as an output parameter.</param>
         public static void Union(ref Rectangle value1, ref Rectangle value2, out Rectangle result)
         {
-            result.X = NewMath.Min(value1.X, value2.X);
-            result.Y = NewMath.Min(value1.Y, value2.Y);
-            result.Width = NewMath.Max(value1.Right, value2.Right) - result.X;
-            result.Height = NewMath.Max(value1.Bottom, value2.Bottom) - result.Y;
+            result.X = _Math.Min(value1.X, value2.X);
+            result.Y = _Math.Min(value1.Y, value2.Y);
+            result.Width = _Math.Max(value1.Right, value2.Right) - result.X;
+            result.Height = _Math.Max(value1.Bottom, value2.Bottom) - result.Y;
         }
 				
         #endregion

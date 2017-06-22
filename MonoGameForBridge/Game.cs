@@ -14,6 +14,7 @@ namespace Microsoft.Xna.Framework
         public GraphicsDevice GraphicsDevice { get; set; }
         public Game ()
         {
+            GraphicsDevice = new GraphicsDevice(this); 
             Content = new ContentManager
             {
                 @internal = this
@@ -26,9 +27,11 @@ namespace Microsoft.Xna.Framework
         protected virtual void Update(GameTime gameTime) { }
         public async void Run ()
         {
+            GraphicsDevice.Init();
             Initialize();
             LoadContent();
             await Content.AwaitLoad();
+            Bridge.Html5.Document.Body.AppendChild(GraphicsDevice.@internal);
             Bridge.Html5.Global.SetInterval(() => Update(new GameTime()), 1000 / 60);
             Bridge.Html5.Global.RequestAnimationFrame(v => Draw(new GameTime()));
         }

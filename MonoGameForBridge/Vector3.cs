@@ -369,7 +369,7 @@ namespace Microsoft.Xna.Framework
         {
             float result;
             DistanceSquared(ref value1, ref value2, out result);
-            return (float)NewMath.Sqrt(result);
+            return (float)_Math.Sqrt(result);
         }
 
         /// <summary>
@@ -381,7 +381,7 @@ namespace Microsoft.Xna.Framework
         public static void Distance(ref Vector3 value1, ref Vector3 value2, out float result)
         {
             DistanceSquared(ref value1, ref value2, out result);
-            result = (float)NewMath.Sqrt(result);
+            result = (float)_Math.Sqrt(result);
         }
 
         /// <summary>
@@ -569,7 +569,7 @@ namespace Microsoft.Xna.Framework
         public float Length()
         {
             float result = DistanceSquared(this, zero);
-            return (float)NewMath.Sqrt(result);
+            return (float)_Math.Sqrt(result);
         }
 
         /// <summary>
