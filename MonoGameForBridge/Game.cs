@@ -33,7 +33,14 @@ namespace Microsoft.Xna.Framework
             await Content.AwaitLoad();
             Bridge.Html5.Document.Body.AppendChild(GraphicsDevice.@internal);
             Bridge.Html5.Global.SetInterval(() => Update(new GameTime()), 1000 / 60);
-            Bridge.Html5.Global.RequestAnimationFrame(v => Draw(new GameTime()));
+            Bridge.Html5.Global.RequestAnimationFrame(v => InternalDraw());
+        }
+
+        void InternalDraw ()
+        {
+            GraphicsDevice.Clear(Color.Purple);
+            Draw(new GameTime());
+            Bridge.Html5.Global.RequestAnimationFrame(v => InternalDraw());
         }
     }
 }

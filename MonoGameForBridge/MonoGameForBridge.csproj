@@ -65,6 +65,11 @@
     <Compile Include="GameTime.cs" />
     <Compile Include="GraphicsDevice.cs" />
     <Compile Include="GraphicsDeviceManager.cs" />
+    <Compile Include="IDrawable.cs" />
+    <Compile Include="IGameComponent.cs" />
+    <Compile Include="IGraphicsDeviceManager.cs" />
+    <Compile Include="IPlatformBackButton.cs" />
+    <Compile Include="IUpdateable.cs" />
     <Compile Include="Keyboard.cs" />
     <Compile Include="KeyboardState.cs" />
     <Compile Include="Keys.cs" />

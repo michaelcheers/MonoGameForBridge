@@ -13,34 +13,41 @@ namespace Microsoft.Xna.Framework.Graphics
     public class SpriteBatch
     {
         #region Consts
-        internal const string vertexShader = @"// an attribute will receive data from a buffer
-attribute vec4 a_position;
-
+        internal const string vertexShader = @"attribute vec2 a_position;
 attribute vec2 a_texCoord;
- 
-// the texCoords passed in from the vertex shader.
+
+uniform vec2 u_resolution;
+
 varying vec2 v_texCoord;
- 
-// all shaders have a main function
+
 void main() {
- 
-  // gl_Position is a special variable a vertex shader
-  // is responsible for setting
-  gl_Position = a_position;
-  v_texCoord = a_texCoord;
+   // convert the rectangle from pixels to 0.0 to 1.0
+   vec2 zeroToOne = a_position / u_resolution;
+
+   // convert from 0->1 to 0->2
+   vec2 zeroToTwo = zeroToOne * 2.0;
+
+   // convert from 0->2 to -1->+1 (clipspace)
+   vec2 clipSpace = zeroToTwo - 1.0;
+
+   gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+
+   // pass the texCoord to the fragment shader
+   // The GPU will interpolate this value between points.
+   v_texCoord = a_texCoord;
 }";
         internal const string fragmentShader = @"precision mediump float;
- 
+
 // our texture
 uniform sampler2D u_image;
- 
+
 // the texCoords passed in from the vertex shader.
 varying vec2 v_texCoord;
- 
+
 void main() {
-   // Look up a color from the texture.
    gl_FragColor = texture2D(u_image, v_texCoord);
-}";
+}
+";
         #endregion
         #region JS Methods
         [Script(@"var shader = gl.createShader(type);
@@ -80,18 +87,18 @@ void main() {
   ]), gl.STATIC_DRAW);")]
         static extern void SetRectangle(Context gl, double x, double y, double width, double height);
         #endregion
-        internal Context context;
+        internal Context context => @internal.context;
         WebGLProgram program;
         WebGLShader _vertexShader, _fragmentShader;
-        int positionAttributeLocation, texCoordLocation;
+        int positionLocation, texCoordLocation;
+        GraphicsDevice @internal;
+
         public SpriteBatch(GraphicsDevice graphicsDevice)
         {
-            context = graphicsDevice.@internal.GetContext(Bridge.Html5.CanvasTypes.CanvasContextWebGLType.WebGL).As<Context>();
+            @internal = graphicsDevice;
             _vertexShader = CreateShader(context, context.VERTEX_SHADER, vertexShader);
             _fragmentShader = CreateShader(context, context.FRAGMENT_SHADER, fragmentShader);
             program = CreateProgram(context, _vertexShader, _fragmentShader);
-            positionAttributeLocation = context.GetAttribLocation(program, "a_position");
-            texCoordLocation = context.GetAttribLocation(program, "a_texCoord");
         }
         WebGLBuffer positionBuffer, texCoordBuffer;
         BeginState _beginState = BeginState.End;
@@ -110,19 +117,10 @@ void main() {
         public void Begin ()
         {
             AssertState(BeginState.End, BeginState.Begin);
-            texCoordBuffer = context.CreateBuffer();
-            context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
-            context.BufferData(context.ARRAY_BUFFER, new FloatArray(new[]
-            {
-                0f, 0f,
-                1f, 0f,
-                0f, 1f,
-                0f, 1f,
-                1f, 0,
-                1f, 1f
-            }), context.STATIC_DRAW);
-            context.EnableVertexAttribArray(texCoordLocation);
-            context.VertexAttribPointer(texCoordLocation, 2, context.FLOAT, false, 0, 0);
+            positionLocation = context.GetAttribLocation(program, "a_position");
+            texCoordLocation = context.GetAttribLocation(program, "a_texCoord");
+            // Tell WebGL how to convert from clip space to pixels
+            context.Viewport(0, 0, context.Canvas.Width, context.Canvas.Height);
         }
         public void End ()
         {
@@ -135,6 +133,17 @@ void main() {
             positionBuffer = context.CreateBuffer();
             context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
             SetRectangle(context, position.X, position.Y, position.Width, position.Height);
+            texCoordBuffer = context.CreateBuffer();
+            context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
+            context.BufferData(context.ARRAY_BUFFER, new FloatArray(new[]
+            {
+                0f, 0f,
+                1f, 0f,
+                0f, 1f,
+                0f, 1f,
+                1f, 0,
+                1f, 1f
+            }), context.STATIC_DRAW);
             var texture = context.CreateTexture();
             context.BindTexture(context.TEXTURE_2D, texture);
             context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, context.CLAMP_TO_EDGE);
@@ -144,10 +153,16 @@ void main() {
 
             // Upload the image into the texture.
             context.TexImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image.@internal);
+            var resolutionLocation = context.GetUniformLocation(program, "u_resolution");
             context.UseProgram(program);
+            context.EnableVertexAttribArray(positionLocation);
             context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
-            context.EnableVertexAttribArray(positionAttributeLocation);
-            context.DrawArrays(context.TRIANGLES, 0, 3);
+            context.VertexAttribPointer(positionLocation, 2, context.FLOAT, false, 0, 0);
+            context.EnableVertexAttribArray(texCoordLocation);
+            context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
+            context.VertexAttribPointer(texCoordLocation, 2, context.FLOAT, false, 0, 0);
+            context.Uniform2f(resolutionLocation, context.Canvas.Width, context.Canvas.Height);
+            context.DrawArrays(context.TRIANGLES, 0, 6);
         }
     }
 }

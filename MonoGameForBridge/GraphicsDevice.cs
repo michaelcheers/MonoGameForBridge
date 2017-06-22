@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Canvas = Bridge.Html5.HTMLCanvasElement;
+using Context = Bridge.WebGL.WebGLRenderingContext;
 
 namespace Microsoft.Xna.Framework.Graphics
 {
@@ -18,6 +19,8 @@ namespace Microsoft.Xna.Framework.Graphics
             this.game = game;
         }
 
+        internal Context context;
+
         internal void Init ()
         {
             var first = graphicsDeviceManagers.First();
@@ -26,6 +29,13 @@ namespace Microsoft.Xna.Framework.Graphics
                 Width = first.PreferredBackBufferWidth,
                 Height = first.PreferredBackBufferHeight
             };
+            context = @internal.GetContext(Bridge.Html5.CanvasTypes.CanvasContextWebGLType.WebGL).As<Context>();
+        }
+
+        public void Clear (Color color)
+        {
+            context.ClearColor(color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
+            context.Clear(context.COLOR_BUFFER_BIT);
         }
     }
 }
