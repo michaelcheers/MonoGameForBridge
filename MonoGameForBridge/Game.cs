@@ -53,7 +53,7 @@ namespace Microsoft.Xna.Framework
             Bridge.Html5.Document.DocumentElement.Style.Cursor = IsMouseVisible ? Bridge.Html5.Cursor.Default : Bridge.Html5.Cursor.None;
             div.AppendChild(GraphicsDevice.@internal);
             div.AppendChild(GraphicsDevice.textCanvas);
-            Input.Mouse.InitMouse(div);
+            Input.Mouse.Init(div);
             Bridge.Html5.Document.Body.AppendChild(div);
             if (GraphicsDevice.graphicsDeviceManager.IsFullScreen)
             {

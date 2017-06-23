@@ -551,16 +551,16 @@ Bridge.assembly("Demo", function ($asm, globals) {
                         minY = (minY - 1) | 0;
                         this.spriteBatch.Draw(this.black, new Microsoft.Xna.Framework.Rectangle.$ctor2(((minX + 24) | 0), ((maxY + Farie_Alchemy.Game1.positionTimes) | 0), 2, ((((((((((minY + 2) | 0)) * Farie_Alchemy.Game1.positionTimes) | 0)) - maxY) | 0) + Farie_Alchemy.Game1.position1Y) | 0)), Microsoft.Xna.Framework.Color.White.$clone());
                         if (this.items.get(this.item1) != null) {
-                            this.spriteBatch.Draw$1(this.items.get(this.item1), positionToDrawAt1.$clone(), i1.$clone());
+                            this.spriteBatch.Draw$2(this.items.get(this.item1), positionToDrawAt1.$clone(), i1.$clone());
                         }
                         if (this.items.get(this.item2) != null) {
-                            this.spriteBatch.Draw$1(this.items.get(this.item2), positionToDrawAt2.$clone(), i2.$clone());
+                            this.spriteBatch.Draw$2(this.items.get(this.item2), positionToDrawAt2.$clone(), i2.$clone());
                         }
                         for (var x = 0; x < System.Array.getLength(this.board, 0); x = (x + 1) | 0) {
                             for (var y = 0; y < System.Array.getLength(this.board, 1); y = (y + 1) | 0) {
                                 if (this.items.get(this.board.get([x, y])) != null) {
                                     if (x === ((System.Array.getLength(this.board, 0) - 1) | 0)) {
-                                        this.spriteBatch.Draw$1(this.items.get(this.board.get([x, y])), new Microsoft.Xna.Framework.Vector2.$ctor2(((x * 50) | 0), ((((y * 50) | 0) + 250) | 0)), this.specialColor.$clone());
+                                        this.spriteBatch.Draw$2(this.items.get(this.board.get([x, y])), new Microsoft.Xna.Framework.Vector2.$ctor2(((x * 50) | 0), ((((y * 50) | 0) + 250) | 0)), this.specialColor.$clone());
                                     } else {
                                         Static.Draw$1(this.spriteBatch, this.items.get(this.board.get([x, y])), new Microsoft.Xna.Framework.Vector2.$ctor2(((x * 50) | 0), ((((y * 50) | 0) + 250) | 0)));
                                     }
@@ -706,7 +706,7 @@ Bridge.assembly("Demo", function ($asm, globals) {
         statics: {
             methods: {
                 Draw$1: function (spriteBatch, texture, position) {
-                    spriteBatch.Draw$1(texture, position.$clone(), Microsoft.Xna.Framework.Color.White.$clone());
+                    spriteBatch.Draw$2(texture, position.$clone(), Microsoft.Xna.Framework.Color.White.$clone());
                 },
                 Draw: function (spriteBatch, texture, rect) {
                     spriteBatch.Draw(texture, rect.$clone(), Microsoft.Xna.Framework.Color.White.$clone());

@@ -134,20 +134,25 @@ void main() {
         }
         public void Draw(Texture2D image, Vector2 position, Color color) =>
             Draw(image, new Rectangle(position.ToPoint(), new Point(image.Width, image.Height)), color);
-        public void Draw (Texture2D image, Rectangle position, Color color)
+        public void Draw (Texture2D image, Rectangle position, Color color) =>
+            Draw(image, position, null, color);
+        public void Draw (Texture2D image, Rectangle position, Rectangle? origin, Color color)
         {
+            if (origin == null)
+                origin = new Rectangle(new Point(), position.Size);
+            Rectangle origin_ = (Rectangle)origin;
             context.Uniform4f(context.GetUniformLocation(program, "u_color"), color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
             context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
             SetRectangle(context, position.X, position.Y, position.Width, position.Height);
             context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
             context.BufferData(context.ARRAY_BUFFER, new FloatArray(new[]
             {
-                0f, 0f,
-                1f, 0f,
-                0f, 1f,
-                0f, 1f,
-                1f, 0,
-                1f, 1f
+                origin_.Left / (float)position.Width, origin_.Top / (float)position.Height,
+                origin_.Right / (float)position.Width, origin_.Top / (float)position.Height,
+                origin_.Left / (float)position.Width, origin_.Bottom / (float)position.Height,
+                origin_.Left / (float)position.Width, origin_.Bottom / (float)position.Height,
+                origin_.Right / (float)position.Width, origin_.Top / (float)position.Height,
+                origin_.Right / (float)position.Width, origin_.Bottom / (float)position.Height
             }), context.STATIC_DRAW);
             var texture = context.CreateTexture();
             context.BindTexture(context.TEXTURE_2D, texture);

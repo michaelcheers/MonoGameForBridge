@@ -8,15 +8,30 @@ namespace Microsoft.Xna.Framework.Input
 {
     public class Mouse
     {
-        static bool _down;
-        static Point c;
-        internal static void InitMouse (Bridge.Html5.HTMLElement element)
+        [Flags]
+        private enum Buttons
         {
-            element.OnMouseDown = e => _down = true;
-            element.OnMouseUp = e => _down = false;
-            element.OnMouseMove = e => c = new Point(e.LayerX, e.LayerY);
+            Left = 1,
+            Right = 2,
+            Middle = 4,
+            X1 = 8,
+            X2 = 0x10
         }
+        static Buttons bt;
+        static Point c;
+        internal static void Init (Bridge.Html5.HTMLElement element)
+        {
+            element.OnMouseDown = UpdateMouse;
+            element.OnMouseUp = UpdateMouse;
+            element.OnMouseMove = UpdateMouse;
+        }
+        internal static void UpdateMouse (Bridge.Html5.MouseEvent element)
+        {
+            bt = (Buttons)element.Buttons;
+            c = new Point(element.LayerX, element.LayerY);
+        }
+        static ButtonState If(Buttons button) => bt.HasFlag(button) ? ButtonState.Pressed : ButtonState.Released;
         public static MouseState GetState () =>
-            new MouseState(c.X, c.Y, 0, _down ? ButtonState.Pressed : ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released, ButtonState.Released);
+            new MouseState(c.X, c.Y, 0, If(Buttons.Left), If(Buttons.Middle), If(Buttons.Right), If(Buttons.X1), If(Buttons.X2));
     }
 }
