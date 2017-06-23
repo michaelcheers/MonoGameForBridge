@@ -29,6 +29,8 @@ namespace Microsoft.Xna.Framework.Graphics
                 Width = first.PreferredBackBufferWidth,
                 Height = first.PreferredBackBufferHeight
             };
+            Input.Mouse.InitMouse(@internal);
+            Viewport = new Viewport(new Rectangle(0, 0, first.PreferredBackBufferWidth, first.PreferredBackBufferHeight));
             context = @internal.GetContext(Bridge.Html5.CanvasTypes.CanvasContextWebGLType.WebGL).As<Context>();
         }
 
@@ -37,5 +39,7 @@ namespace Microsoft.Xna.Framework.Graphics
             context.ClearColor(color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
             context.Clear(context.COLOR_BUFFER_BIT);
         }
+
+        public Viewport Viewport { get; private set; }
     }
 }

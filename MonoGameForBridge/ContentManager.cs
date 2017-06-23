@@ -23,8 +23,6 @@ namespace Microsoft.Xna.Framework.Content
                 images.Add(value, (Texture2D)(object)r);
                 return (T)(object)r;
             }
-            else if (typeof(T) == typeof(SpriteFont))
-                return (T)(object)(new SpriteFont());
             else
                 throw new NotImplementedException();
         }
@@ -32,10 +30,10 @@ namespace Microsoft.Xna.Framework.Content
         internal async Task AwaitLoad ()
         {
             foreach (var image in images)
-                image.Value.@internal = await AwaitLoad(image.Key);
+                image.Value.@internal = await AwaitLoadImage(image.Key);
         }
 
-        internal Task<HTMLImageElement> AwaitLoad (string value)
+        internal Task<HTMLImageElement> AwaitLoadImage (string value)
         {
             HTMLImageElement image = new HTMLImageElement
             {
@@ -44,6 +42,13 @@ namespace Microsoft.Xna.Framework.Content
             var result = new TaskCompletionSource<HTMLImageElement>();
             image.OnLoad = e => result.SetResult(image);
             return result.Task;
+        }
+        [Flags]
+        enum InStyle
+        {
+            Regular = 0,
+            Bold = 1,
+            Italic = 2
         }
     }
 }

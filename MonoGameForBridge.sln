@@ -7,6 +7,48 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGameForBridge", "MonoGa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "Demo\Demo.csproj", "{038CFB8B-8F43-4DA9-B37A-CAF86E5A7AD9}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "MonoGameForBridge", "MonoGameForBridge\", "{A13CF446-FD43-410F-BCFC-E488907DA5CA}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_36736"
+		Debug.AspNetCompiler.PhysicalPath = "MonoGameForBridge\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_36736\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_36736"
+		Release.AspNetCompiler.PhysicalPath = "MonoGameForBridge\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_36736\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "36736"
+		SlnRelativePath = "MonoGameForBridge\"
+	EndProjectSection
+EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "Demo", "Demo\", "{F7C384BF-03C2-494C-A2D6-A323C8E50D2B}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_36797"
+		Debug.AspNetCompiler.PhysicalPath = "Demo\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_36797\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_36797"
+		Release.AspNetCompiler.PhysicalPath = "Demo\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_36797\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "36797"
+		SlnRelativePath = "Demo\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +63,14 @@ Global
 		{038CFB8B-8F43-4DA9-B37A-CAF86E5A7AD9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{038CFB8B-8F43-4DA9-B37A-CAF86E5A7AD9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{038CFB8B-8F43-4DA9-B37A-CAF86E5A7AD9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A13CF446-FD43-410F-BCFC-E488907DA5CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A13CF446-FD43-410F-BCFC-E488907DA5CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A13CF446-FD43-410F-BCFC-E488907DA5CA}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{A13CF446-FD43-410F-BCFC-E488907DA5CA}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{F7C384BF-03C2-494C-A2D6-A323C8E50D2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7C384BF-03C2-494C-A2D6-A323C8E50D2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7C384BF-03C2-494C-A2D6-A323C8E50D2B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7C384BF-03C2-494C-A2D6-A323C8E50D2B}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

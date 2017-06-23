@@ -40,12 +40,13 @@ void main() {
 
 // our texture
 uniform sampler2D u_image;
+uniform vec4 u_color;
 
 // the texCoords passed in from the vertex shader.
 varying vec2 v_texCoord;
 
 void main() {
-   gl_FragColor = texture2D(u_image, v_texCoord);
+   gl_FragColor = texture2D(u_image, v_texCoord) * u_color;
 }
 ";
         #endregion
@@ -88,6 +89,7 @@ void main() {
         static extern void SetRectangle(Context gl, double x, double y, double width, double height);
         #endregion
         internal Context context => @internal.context;
+        internal Bridge.Html5.CanvasRenderingContext2D context2d => @internal.@internal.GetContext(Bridge.Html5.CanvasTypes.CanvasContext2DType.CanvasRenderingContext2D);
         WebGLProgram program;
         WebGLShader _vertexShader, _fragmentShader;
         int positionLocation, texCoordLocation;
@@ -99,6 +101,8 @@ void main() {
             _vertexShader = CreateShader(context, context.VERTEX_SHADER, vertexShader);
             _fragmentShader = CreateShader(context, context.FRAGMENT_SHADER, fragmentShader);
             program = CreateProgram(context, _vertexShader, _fragmentShader);
+            positionBuffer = context.CreateBuffer();
+            texCoordBuffer = context.CreateBuffer();
         }
         WebGLBuffer positionBuffer, texCoordBuffer;
         BeginState _beginState = BeginState.End;
@@ -120,7 +124,7 @@ void main() {
             positionLocation = context.GetAttribLocation(program, "a_position");
             texCoordLocation = context.GetAttribLocation(program, "a_texCoord");
             // Tell WebGL how to convert from clip space to pixels
-            context.Viewport(0, 0, context.Canvas.Width, context.Canvas.Height);
+            context.Viewport(0, 0, @internal.@internal.Width, @internal.@internal.Height);
         }
         public void End ()
         {
@@ -130,10 +134,9 @@ void main() {
             Draw(image, new Rectangle(position.ToPoint(), new Point(image.Width, image.Height)), color);
         public void Draw (Texture2D image, Rectangle position, Color color)
         {
-            positionBuffer = context.CreateBuffer();
+            context.Uniform4f(context.GetUniformLocation(program, "u_color"), color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
             context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
             SetRectangle(context, position.X, position.Y, position.Width, position.Height);
-            texCoordBuffer = context.CreateBuffer();
             context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
             context.BufferData(context.ARRAY_BUFFER, new FloatArray(new[]
             {
@@ -164,5 +167,10 @@ void main() {
             context.Uniform2f(resolutionLocation, context.Canvas.Width, context.Canvas.Height);
             context.DrawArrays(context.TRIANGLES, 0, 6);
         }
+        //public void DrawString (SpriteFont spriteFont, string value, Vector2 position, Color color)
+        //{
+        //    context2d.FillStyle = $"rgba({color.R}, {color.G}, {color.B}, {color.A})";
+        //    context2d.FillText(value, (uint)position.X, (uint)position.Y);
+        //}
     }
 }
