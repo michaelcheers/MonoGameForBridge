@@ -14,7 +14,7 @@ namespace Microsoft.Xna.Framework
         public int PreferredBackBufferHeight { get; set; } = 400;
         public GraphicsDeviceManager (Game game)
         {
-            (@internal = game).GraphicsDevice.graphicsDeviceManagers.Add(this);
+            (@internal = game).GraphicsDevice.graphicsDeviceManager = this;
         }
     }
 }

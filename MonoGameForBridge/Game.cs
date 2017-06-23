@@ -13,6 +13,7 @@ namespace Microsoft.Xna.Framework
     {
         public ContentManager Content { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
+        public bool IsMouseVisible { get; set; }
         public Game ()
         {
             GraphicsDevice = new GraphicsDevice(this); 
@@ -32,7 +33,7 @@ namespace Microsoft.Xna.Framework
             Initialize();
             LoadContent();
             await Content.AwaitLoad();
-            if (GraphicsDevice.graphicsDeviceManagers.First().IsFullScreen)
+            if (GraphicsDevice.graphicsDeviceManager.IsFullScreen)
             {
                 Bridge.Html5.HTMLHeadingElement heading;
                 Bridge.Html5.Document.Body.Style.BackgroundColor = "#ffdddd";
@@ -47,15 +48,21 @@ namespace Microsoft.Xna.Framework
                 Bridge.Html5.Document.OnClick = oldClick;
                 heading.Style.Display = Bridge.Html5.Display.None;
             }
-            Bridge.Html5.Document.Body.AppendChild(GraphicsDevice.@internal);
-            if (GraphicsDevice.graphicsDeviceManagers.First().IsFullScreen)
+            var div = Bridge.Html5.Document.CreateElement("div");
+            GraphicsDevice.@internal.Style.BackgroundColor = Bridge.Html5.HTMLColor.White;
+            Bridge.Html5.Document.DocumentElement.Style.Cursor = IsMouseVisible ? Bridge.Html5.Cursor.Default : Bridge.Html5.Cursor.None;
+            div.AppendChild(GraphicsDevice.@internal);
+            div.AppendChild(GraphicsDevice.textCanvas);
+            Input.Mouse.InitMouse(div);
+            Bridge.Html5.Document.Body.AppendChild(div);
+            if (GraphicsDevice.graphicsDeviceManager.IsFullScreen)
             {
                 if (Browser.IsWebKit)
-                    GraphicsDevice.@internal.ToDynamic().webkitRequestFullScreen();
+                    div.ToDynamic().webkitRequestFullScreen();
                 else if (Browser.FirefoxVersion > 0)
-                    GraphicsDevice.@internal.ToDynamic().mozRequestFullScreen();
+                    div.ToDynamic().mozRequestFullScreen();
                 else if (Browser.IeVersion > 0)
-                    GraphicsDevice.@internal.ToDynamic().msRequestFullScreen();
+                    div.ToDynamic().msRequestFullScreen();
                 else
                     throw new NotSupportedException("Browser unknown.");
             }

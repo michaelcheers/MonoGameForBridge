@@ -14,13 +14,20 @@ namespace Microsoft.Xna.Framework.Content
         internal Game @internal;
         internal ContentManager() { }
         Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
+        Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
 
         public T Load<T> (string value)
         {
             if (typeof(T) == typeof(Texture2D))
             {
                 Texture2D r = new Texture2D();
-                images.Add(value, (Texture2D)(object)r);
+                images.Add(value, r);
+                return (T)(object)r;
+            }
+            else if (typeof(T) == typeof(SpriteFont))
+            {
+                SpriteFont r = new SpriteFont(@internal.GraphicsDevice);
+                fonts.Add(value, r);
                 return (T)(object)r;
             }
             else
@@ -31,6 +38,8 @@ namespace Microsoft.Xna.Framework.Content
         {
             foreach (var image in images)
                 image.Value.@internal = await AwaitLoadImage(image.Key);
+            foreach (var font in fonts)
+                await AwaitLoadSpriteFont(font.Key, font.Value);
         }
 
         internal Task<HTMLImageElement> AwaitLoadImage (string value)
@@ -42,6 +51,33 @@ namespace Microsoft.Xna.Framework.Content
             var result = new TaskCompletionSource<HTMLImageElement>();
             image.OnLoad = e => result.SetResult(image);
             return result.Task;
+        }
+        internal async Task AwaitLoadSpriteFont (string value, SpriteFont font)
+        {
+            var request = new Bridge.Html5.XMLHttpRequest();
+            request.Open("GET", $"{RootDirectory}/{value}.spritefont");
+            request.Send((string)null);
+            var task = new TaskCompletionSource<string>();
+            request.OnReadyStateChange = () =>
+            {
+                if (request.ReadyState == Bridge.Html5.AjaxReadyState.Done)
+                    if (request.Status == 200)
+                        task.SetResult(request.ResponseText);
+            };
+            var domParser = new Bridge.Html5.DOMParser();
+            var xmlDoc = domParser.ParseFromString(await task.Task, "text/xml");
+            string fontName = xmlDoc.GetElementsByTagName("FontName")[0].ChildNodes[0].NodeValue;
+            double fontSize = double.Parse(xmlDoc.GetElementsByTagName("Size")[0].ChildNodes[0].NodeValue);
+            InStyle style = (InStyle)Enum.Parse(typeof(InStyle), xmlDoc.GetElementsByTagName("Style")[0].ChildNodes[0].NodeValue);
+            string resultVal = "";
+            if (style.HasFlag(InStyle.Bold))
+                resultVal += "bold ";
+            if (style.HasFlag(InStyle.Italic))
+                resultVal += "italic ";
+            font._height = fontSize;
+            resultVal += fontSize + "px ";
+            resultVal += fontName;
+            font._name = resultVal;
         }
         [Flags]
         enum InStyle

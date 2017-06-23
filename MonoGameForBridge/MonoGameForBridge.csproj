@@ -86,6 +86,7 @@
     <Compile Include="Ray.cs" />
     <Compile Include="Rectangle.cs" />
     <Compile Include="SpriteBatch.cs" />
+    <Compile Include="SpriteFont.cs" />
     <Compile Include="Texture2D.cs" />
     <Compile Include="Vector2.cs" />
     <Compile Include="Vector3.cs" />
@@ -93,29 +94,10 @@
     <Compile Include="Viewport.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\angel.png" />
-    <Content Include="Content\black.png" />
-    <Content Include="Content\cake.png" />
-    <Content Include="Content\carrot.png" />
-    <Content Include="Content\dragon.jpg" />
-    <Content Include="Content\duck.png" />
-    <Content Include="Content\earth.png" />
-    <Content Include="Content\god.png" />
-    <Content Include="Content\gold.png" />
-    <Content Include="Content\horse.png" />
-    <Content Include="Content\moon.png" />
-    <Content Include="Content\rabbit.png" />
-    <Content Include="Content\star.png" />
-    <Content Include="Content\sun.png" />
-    <Content Include="Content\unicorn.png" />
-    <Content Include="Content\wish.png" />
     <Content Include="demo.html" />
   </ItemGroup>
   <ItemGroup>
     <None Include="bridge.json" />
-    <None Include="Content\Points.spritefont">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

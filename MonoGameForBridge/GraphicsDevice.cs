@@ -11,8 +11,10 @@ namespace Microsoft.Xna.Framework.Graphics
     public class GraphicsDevice
     {
         internal Canvas @internal;
+        internal Canvas textCanvas;
+        internal Bridge.Html5.CanvasRenderingContext2D textContext;
         internal Game game;
-        public List<GraphicsDeviceManager> graphicsDeviceManagers = new List<GraphicsDeviceManager>();
+        public GraphicsDeviceManager graphicsDeviceManager;
 
         internal GraphicsDevice (Game game)
         {
@@ -23,15 +25,26 @@ namespace Microsoft.Xna.Framework.Graphics
 
         internal void Init ()
         {
-            var first = graphicsDeviceManagers.First();
+            string loc = graphicsDeviceManager.IsFullScreen ? ((Bridge.Html5.Window.Screen.Width - graphicsDeviceManager.PreferredBackBufferWidth) / 2) + "px" : "0px";
             @internal = new Canvas
             {
-                Width = first.PreferredBackBufferWidth,
-                Height = first.PreferredBackBufferHeight
+                Width = graphicsDeviceManager.PreferredBackBufferWidth,
+                Height = graphicsDeviceManager.PreferredBackBufferHeight
             };
-            Input.Mouse.InitMouse(@internal);
-            Viewport = new Viewport(new Rectangle(0, 0, first.PreferredBackBufferWidth, first.PreferredBackBufferHeight));
+            @internal.Style.Position = Bridge.Html5.Position.Absolute;
+            @internal.Style.Left = loc;
+            @internal.Style.Top = "0px";
+            textCanvas = new Canvas
+            {
+                Width = graphicsDeviceManager.PreferredBackBufferWidth,
+                Height = graphicsDeviceManager.PreferredBackBufferHeight
+            };
+            textCanvas.Style.Position = Bridge.Html5.Position.Absolute;
+            textCanvas.Style.Left = loc;
+            textCanvas.Style.Top = "0px";
+            Viewport = new Viewport(new Rectangle(0, 0, graphicsDeviceManager.PreferredBackBufferWidth, graphicsDeviceManager.PreferredBackBufferHeight));
             context = @internal.GetContext(Bridge.Html5.CanvasTypes.CanvasContextWebGLType.WebGL).As<Context>();
+            textContext = textCanvas.GetContext(Bridge.Html5.CanvasTypes.CanvasContext2DType.CanvasRenderingContext2D);
         }
 
         public void Clear (Color color)

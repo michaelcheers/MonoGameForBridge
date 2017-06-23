@@ -68,7 +68,7 @@ namespace Farie_Alchemy
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         int points = 0;
-        //SpriteFont pointForm;
+        SpriteFont pointForm;
         Dictionary<MythicalItem, Texture2D> items;
         //SoundEffectInstance instance;
         MythicalItem item1;
@@ -145,7 +145,7 @@ namespace Farie_Alchemy
             items.Add(MythicalItem.Empty, null);
             black = Content.Load<Texture2D>("black");
             //bgEffect = Content.Load<SoundEffect>("song");
-            //pointForm = Content.Load<SpriteFont>("Points");
+            pointForm = Content.Load<SpriteFont>("Points");
             //instance = bgEffect.CreateInstance();
             //instance.IsLooped = true;
         }
@@ -480,13 +480,13 @@ namespace Farie_Alchemy
             if (jackpot)
             {
                 const string jackpotString = "You won a jackpot. Xbox use Left Stick to click. Keyboard use enter.";
-                //spriteBatch.DrawString(pointForm, jackpotString, new Vector2(GraphicsDevice.Viewport.Width / 2, 50) - (pointForm.MeasureString(jackpotString) / 2), Color.Black);
+                spriteBatch.DrawString(pointForm, jackpotString, new Vector2(GraphicsDevice.Viewport.Width / 2, 50) - (pointForm.MeasureString(jackpotString) / 2), Color.Black);
             }
             else
             {
                 string pointsText = "Points: " + points;
                 if (this.lost) pointsText = "You lost. Press " + (GamePad.GetState(PlayerIndex.One).IsConnected ? "Back on the Xbox controller" : "Esc on the keyboard") + " to exit. You had " + points + " points.";
-                //spriteBatch.DrawString(pointForm, pointsText, new Vector2(GraphicsDevice.Viewport.Width / 2, 50) - (pointForm.MeasureString(pointsText) / 2), Color.Black);
+                spriteBatch.DrawString(pointForm, pointsText, new Vector2(GraphicsDevice.Viewport.Width / 2, 50) - (pointForm.MeasureString(pointsText) / 2), Color.Black);
                 if (!lost)
                 {
                     Vector2 positionToDrawAt1 = default(Vector2);
@@ -526,6 +526,14 @@ namespace Farie_Alchemy
                     }
                     positionToDrawAt1.X += vectorPosition * positionTimes;
                     positionToDrawAt2.X += vectorPosition * positionTimes;
+                    int minX = (int)Math.Min(positionToDrawAt1.X, positionToDrawAt2.X),
+                        maxY = (int)Math.Max(positionToDrawAt1.Y, positionToDrawAt2.Y),
+                        minY = 0;
+                    for (; minY < board.GetLength(1); minY++)
+                        if (board[vectorPosition, minY] != MythicalItem.Empty)
+                            break;
+                    minY--;
+                    spriteBatch.Draw(black, new Rectangle(minX + 24, maxY + positionTimes, 2, ((minY + 2) * positionTimes) - maxY + position1Y), Color.White);
                     if (items[item1] != null)
                     spriteBatch.Draw(items[item1], positionToDrawAt1, i1);
                     if (items[item2] != null)
@@ -541,6 +549,7 @@ namespace Farie_Alchemy
                                     spriteBatch.Draw(items[board[x, y]], new Vector2(x * 50, y * 50 + 250));
                         }
                     }
+                    spriteBatch.Draw(black, new Rectangle(0, 250, board.GetLength(0) * 50, 1), Color.White);
                     for (int y = 0; y < board.GetLength(1); y++)
                     {
                         spriteBatch.Draw(black, new Rectangle(board.GetLength(0) * 50, y * 50 + 250, 32, 32));
@@ -556,7 +565,7 @@ namespace Farie_Alchemy
                         if (items[(MythicalItem)enumIndex] != null)
                         {
                             spriteBatch.Draw(items[(MythicalItem)enumIndex], new Rectangle((board.GetLength(0) + 1) * 50, y * 50 + 250, 32, 32));
-                            //spriteBatch.DrawString(pointForm, Convert.ToString(pointsGiven[(MythicalItem)enumIndex]), new Vector2((board.GetLength(0) + 2) * 50, y * 50 + 250), Color.Black);                     
+                            spriteBatch.DrawString(pointForm, Convert.ToString(pointsGiven[(MythicalItem)enumIndex]), new Vector2((board.GetLength(0) + 2) * 50, y * 50 + 250), Color.Black);
                         }
                     }
                     for (int x = 0; x < board.GetLength(0); x++)
@@ -567,7 +576,7 @@ namespace Farie_Alchemy
                 else
                 {
                     string nameText = "Name: " + name;
-                    //spriteBatch.DrawString(pointForm, nameText, new Vector2(GraphicsDevice.Viewport.Width / 2, 100 + pointForm.MeasureString(pointsText).Y) - (pointForm.MeasureString(nameText) / 2), Color.Black);
+                    spriteBatch.DrawString(pointForm, nameText, new Vector2(GraphicsDevice.Viewport.Width / 2, 100 + pointForm.MeasureString(pointsText).Y) - (pointForm.MeasureString(nameText) / 2), Color.Black);
                 }
             }
             spriteBatch.End();

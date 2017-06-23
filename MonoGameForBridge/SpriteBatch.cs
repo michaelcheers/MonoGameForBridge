@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Context = Bridge.WebGL.WebGLRenderingContext;
+using TextCanvas = Bridge.Html5.CanvasRenderingContext2D;
 using Bridge.WebGL;
 using FloatArray = Bridge.Html5.Float32Array;
 
@@ -89,7 +90,7 @@ void main() {
         static extern void SetRectangle(Context gl, double x, double y, double width, double height);
         #endregion
         internal Context context => @internal.context;
-        internal Bridge.Html5.CanvasRenderingContext2D context2d => @internal.@internal.GetContext(Bridge.Html5.CanvasTypes.CanvasContext2DType.CanvasRenderingContext2D);
+        internal TextCanvas textCanvas => @internal.textContext;
         WebGLProgram program;
         WebGLShader _vertexShader, _fragmentShader;
         int positionLocation, texCoordLocation;
@@ -120,6 +121,7 @@ void main() {
         }
         public void Begin ()
         {
+            textCanvas.ClearRect(0, 0, textCanvas.Canvas.Width, textCanvas.Canvas.Height);
             AssertState(BeginState.End, BeginState.Begin);
             positionLocation = context.GetAttribLocation(program, "a_position");
             texCoordLocation = context.GetAttribLocation(program, "a_texCoord");
@@ -167,10 +169,11 @@ void main() {
             context.Uniform2f(resolutionLocation, context.Canvas.Width, context.Canvas.Height);
             context.DrawArrays(context.TRIANGLES, 0, 6);
         }
-        //public void DrawString (SpriteFont spriteFont, string value, Vector2 position, Color color)
-        //{
-        //    context2d.FillStyle = $"rgba({color.R}, {color.G}, {color.B}, {color.A})";
-        //    context2d.FillText(value, (uint)position.X, (uint)position.Y);
-        //}
+        public void DrawString(SpriteFont spriteFont, string value, Vector2 position, Color color)
+        {
+            textCanvas.Font = spriteFont._name;
+            textCanvas.FillStyle = $"rgba({color.R}, {color.G}, {color.B}, {color.A})";
+            textCanvas.FillText(value, (uint)position.X, (uint)(position.Y + spriteFont._height));
+        }
     }
 }
