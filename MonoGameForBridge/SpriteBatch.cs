@@ -13,13 +13,12 @@ namespace Microsoft.Xna.Framework.Graphics
 {
     public class SpriteBatch
     {
-        #region Consts
+        #region Shaders
         internal const string vertexShader = @"attribute vec2 a_position;
 attribute vec2 a_texCoord;
-
 uniform vec2 u_resolution;
-
 varying vec2 v_texCoord;
+uniform vec2 u_rotation;
 
 void main() {
    // convert the rectangle from pixels to 0.0 to 1.0
@@ -75,25 +74,31 @@ void main() {
   console.log(gl.getProgramInfoLog(program));
   gl.deleteProgram(program);")]
         static extern WebGLProgram CreateProgram(Context gl, WebGLShader vertexShader, WebGLShader fragmentShader);
-        [Script(@"var x1 = x;
-  var x2 = x + width;
-  var y1 = y;
-  var y2 = y + height;
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-     x1, y1,
-     x2, y1,
-     x1, y2,
-     x1, y2,
-     x2, y1,
-     x2, y2,
-  ]), gl.STATIC_DRAW);")]
-        static extern void SetRectangle(Context gl, double x, double y, double width, double height);
+        static void SetRotatedRectangle(Context gl, float rotation, Vector2 position, Vector2 origin, Vector2 size)
+        {
+            Vector2 stepRight =
+                new Vector2(size.X * (float)Math.Cos(rotation), size.X * (float)Math.Sin(rotation));
+            Vector2 stepDown =
+                new Vector2(size.Y * -(float)Math.Sin(rotation), size.Y * (float)Math.Cos(rotation));
+            Vector2 topLeft = new Vector2(
+                position.X + origin.X * -(float)Math.Cos(rotation) + origin.Y * (float)Math.Sin(rotation),
+                position.Y + origin.X * -(float)Math.Sin(rotation) + origin.Y * -(float)Math.Cos(rotation));
+            gl.BufferData(gl.ARRAY_BUFFER, new FloatArray(new[] {
+                topLeft.X                           , topLeft.Y,
+                topLeft.X + stepRight.X             , topLeft.Y + stepRight.Y,
+                topLeft.X + stepDown.X              , topLeft.Y + stepDown.Y,
+                topLeft.X + stepDown.X              , topLeft.Y + stepDown.Y,
+                topLeft.X + stepRight.X             , topLeft.Y + stepRight.Y,
+                topLeft.X + stepRight.X + stepDown.X, topLeft.Y + stepRight.Y + stepDown.Y
+            }), gl.STATIC_DRAW);
+        }
         #endregion
         internal Context context => @internal.context;
         internal TextCanvas textCanvas => @internal.textContext;
         WebGLProgram program;
         WebGLShader _vertexShader, _fragmentShader;
         int positionLocation, texCoordLocation;
+        WebGLUniformLocation rotationLocation;
         GraphicsDevice @internal;
 
         public SpriteBatch(GraphicsDevice graphicsDevice)
@@ -125,8 +130,11 @@ void main() {
             AssertState(BeginState.End, BeginState.Begin);
             positionLocation = context.GetAttribLocation(program, "a_position");
             texCoordLocation = context.GetAttribLocation(program, "a_texCoord");
+            rotationLocation = context.GetUniformLocation(program, "u_rotation");
             // Tell WebGL how to convert from clip space to pixels
             context.Viewport(0, 0, @internal.@internal.Width, @internal.@internal.Height);
+            context.BlendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
+            context.Enable(context.BLEND);
         }
         public void End ()
         {
@@ -136,33 +144,55 @@ void main() {
             Draw(image, new Rectangle(position.ToPoint(), new Point(image.Width, image.Height)), color);
         public void Draw (Texture2D image, Rectangle position, Color color) =>
             Draw(image, position, null, color);
-        public void Draw (Texture2D image, Rectangle position, Rectangle? origin, Color color)
+        public void Draw(Texture2D image, Rectangle position, Rectangle? sourceRectangle, Color color) =>
+            Draw(image, position, sourceRectangle, color, 0, new Vector2(), SpriteEffects.None, 0f);
+        public void Draw(Texture2D image, Rectangle position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, SpriteEffects effects, float layerDepth) =>
+            Draw(image, position.Location.ToVector2(), sourceRectangle, color, rotation, origin, new Vector2(position.Width / (float)image.Width, position.Height / (float)image.Height), effects, layerDepth);
+        public void Draw
+        (
+             Texture2D texture,
+             Vector2 position,
+             Rectangle? sourceRectangle,
+             Color color,
+             float rotation,
+             Vector2 origin,
+             Vector2 scale,
+             SpriteEffects effects,
+             float layerDepth
+        )
         {
-            if (origin == null)
-                origin = new Rectangle(new Point(), position.Size);
-            Rectangle origin_ = (Rectangle)origin;
+            float sinRotation = (float)Math.Sin(rotation);
+            float cosRotation = (float)Math.Cos(rotation);
+            AssertState(BeginState.Begin, BeginState.Begin);
+            if (sourceRectangle == null)
+                sourceRectangle = new Rectangle(new Point(), new Point(texture.Width, texture.Height));
+            Rectangle sourceRectangle_ = (Rectangle)sourceRectangle;
             context.Uniform4f(context.GetUniformLocation(program, "u_color"), color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
             context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
-            SetRectangle(context, position.X, position.Y, position.Width, position.Height);
+            SetRotatedRectangle(context, rotation, position, origin * scale, new Vector2(texture.Width, texture.Height) * scale);
             context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
+            var left = (effects.HasFlag(SpriteEffects.FlipHorizontally) ? sourceRectangle_.Right : sourceRectangle_.Left) / (float)texture.Width;
+            var right = (effects.HasFlag(SpriteEffects.FlipHorizontally) ? sourceRectangle_.Left : sourceRectangle_.Right) / (float)texture.Width;
+            var top = (effects.HasFlag(SpriteEffects.FlipVertically) ? sourceRectangle_.Bottom : sourceRectangle_.Top) / (float)texture.Height;
+            var bottom = (effects.HasFlag(SpriteEffects.FlipVertically) ? sourceRectangle_.Top : sourceRectangle_.Bottom) / (float)texture.Height;
             context.BufferData(context.ARRAY_BUFFER, new FloatArray(new[]
             {
-                origin_.Left / (float)position.Width, origin_.Top / (float)position.Height,
-                origin_.Right / (float)position.Width, origin_.Top / (float)position.Height,
-                origin_.Left / (float)position.Width, origin_.Bottom / (float)position.Height,
-                origin_.Left / (float)position.Width, origin_.Bottom / (float)position.Height,
-                origin_.Right / (float)position.Width, origin_.Top / (float)position.Height,
-                origin_.Right / (float)position.Width, origin_.Bottom / (float)position.Height
+                left, top,
+                right, top,
+                left, bottom,
+                left, bottom,
+                right, top,
+                right, bottom
             }), context.STATIC_DRAW);
-            var texture = context.CreateTexture();
-            context.BindTexture(context.TEXTURE_2D, texture);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, context.CLAMP_TO_EDGE);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, context.CLAMP_TO_EDGE);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.NEAREST);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.NEAREST);
+            var wTexture = context.CreateTexture();
+            context.BindTexture(context.TEXTURE_2D, wTexture);
+            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, context.REPEAT);
+            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, context.REPEAT);
+            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR);
+            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
 
             // Upload the image into the texture.
-            context.TexImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, image.@internal);
+            context.TexImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, texture.@internal);
             var resolutionLocation = context.GetUniformLocation(program, "u_resolution");
             context.UseProgram(program);
             context.EnableVertexAttribArray(positionLocation);
@@ -176,6 +206,7 @@ void main() {
         }
         public void DrawString(SpriteFont spriteFont, string value, Vector2 position, Color color)
         {
+            AssertState(BeginState.Begin, BeginState.Begin);
             textCanvas.Font = spriteFont._name;
             textCanvas.FillStyle = $"rgba({color.R}, {color.G}, {color.B}, {color.A})";
             textCanvas.FillText(value, (uint)position.X, (uint)(position.Y + spriteFont._height));
