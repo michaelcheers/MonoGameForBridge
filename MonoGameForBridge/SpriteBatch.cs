@@ -93,8 +93,8 @@ void main() {
             }), gl.STATIC_DRAW);
         }
         #endregion
-        internal Context context => @internal.context;
-        internal TextCanvas textCanvas => @internal.textContext;
+        internal Context _context => @internal.context;
+        internal TextCanvas _textCanvas => @internal.textContext;
         WebGLProgram program;
         WebGLShader _vertexShader, _fragmentShader;
         int positionLocation, texCoordLocation;
@@ -104,11 +104,11 @@ void main() {
         public SpriteBatch(GraphicsDevice graphicsDevice)
         {
             @internal = graphicsDevice;
-            _vertexShader = CreateShader(context, context.VERTEX_SHADER, vertexShader);
-            _fragmentShader = CreateShader(context, context.FRAGMENT_SHADER, fragmentShader);
-            program = CreateProgram(context, _vertexShader, _fragmentShader);
-            positionBuffer = context.CreateBuffer();
-            texCoordBuffer = context.CreateBuffer();
+            _vertexShader = CreateShader(_context, _context.VERTEX_SHADER, vertexShader);
+            _fragmentShader = CreateShader(_context, _context.FRAGMENT_SHADER, fragmentShader);
+            program = CreateProgram(_context, _vertexShader, _fragmentShader);
+            positionBuffer = _context.CreateBuffer();
+            texCoordBuffer = _context.CreateBuffer();
         }
         WebGLBuffer positionBuffer, texCoordBuffer;
         BeginState _beginState = BeginState.End;
@@ -126,15 +126,15 @@ void main() {
         }
         public void Begin ()
         {
-            textCanvas.ClearRect(0, 0, textCanvas.Canvas.Width, textCanvas.Canvas.Height);
+            _textCanvas.ClearRect(0, 0, _textCanvas.Canvas.Width, _textCanvas.Canvas.Height);
             AssertState(BeginState.End, BeginState.Begin);
-            positionLocation = context.GetAttribLocation(program, "a_position");
-            texCoordLocation = context.GetAttribLocation(program, "a_texCoord");
-            rotationLocation = context.GetUniformLocation(program, "u_rotation");
+            positionLocation = _context.GetAttribLocation(program, "a_position");
+            texCoordLocation = _context.GetAttribLocation(program, "a_texCoord");
+            rotationLocation = _context.GetUniformLocation(program, "u_rotation");
             // Tell WebGL how to convert from clip space to pixels
-            context.Viewport(0, 0, @internal.@internal.Width, @internal.@internal.Height);
-            context.BlendFunc(context.SRC_ALPHA, context.ONE_MINUS_SRC_ALPHA);
-            context.Enable(context.BLEND);
+            _context.Viewport(0, 0, @internal.@internal.Width, @internal.@internal.Height);
+            _context.BlendFunc(_context.SRC_ALPHA, _context.ONE_MINUS_SRC_ALPHA);
+            _context.Enable(_context.BLEND);
         }
         public void End ()
         {
@@ -161,21 +161,19 @@ void main() {
              float layerDepth
         )
         {
-            float sinRotation = (float)Math.Sin(rotation);
-            float cosRotation = (float)Math.Cos(rotation);
             AssertState(BeginState.Begin, BeginState.Begin);
             if (sourceRectangle == null)
                 sourceRectangle = new Rectangle(new Point(), new Point(texture.Width, texture.Height));
             Rectangle sourceRectangle_ = (Rectangle)sourceRectangle;
-            context.Uniform4f(context.GetUniformLocation(program, "u_color"), color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
-            context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
-            SetRotatedRectangle(context, rotation, position, origin * scale, new Vector2(texture.Width, texture.Height) * scale);
-            context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
+            _context.Uniform4f(_context.GetUniformLocation(program, "u_color"), color.R / 255d, color.G / 255d, color.B / 255d, color.A / 255d);
+            _context.BindBuffer(_context.ARRAY_BUFFER, positionBuffer);
+            SetRotatedRectangle(_context, rotation, position, origin * scale, new Vector2(texture.Width, texture.Height) * scale);
+            _context.BindBuffer(_context.ARRAY_BUFFER, texCoordBuffer);
             var left = (effects.HasFlag(SpriteEffects.FlipHorizontally) ? sourceRectangle_.Right : sourceRectangle_.Left) / (float)texture.Width;
             var right = (effects.HasFlag(SpriteEffects.FlipHorizontally) ? sourceRectangle_.Left : sourceRectangle_.Right) / (float)texture.Width;
             var top = (effects.HasFlag(SpriteEffects.FlipVertically) ? sourceRectangle_.Bottom : sourceRectangle_.Top) / (float)texture.Height;
             var bottom = (effects.HasFlag(SpriteEffects.FlipVertically) ? sourceRectangle_.Top : sourceRectangle_.Bottom) / (float)texture.Height;
-            context.BufferData(context.ARRAY_BUFFER, new FloatArray(new[]
+            _context.BufferData(_context.ARRAY_BUFFER, new FloatArray(new[]
             {
                 left, top,
                 right, top,
@@ -183,33 +181,44 @@ void main() {
                 left, bottom,
                 right, top,
                 right, bottom
-            }), context.STATIC_DRAW);
-            var wTexture = context.CreateTexture();
-            context.BindTexture(context.TEXTURE_2D, wTexture);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_S, context.REPEAT);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_WRAP_T, context.REPEAT);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_MIN_FILTER, context.LINEAR);
-            context.TexParameteri(context.TEXTURE_2D, context.TEXTURE_MAG_FILTER, context.LINEAR);
+            }), _context.STATIC_DRAW);
+            var wTexture = _context.CreateTexture();
+            _context.BindTexture(_context.TEXTURE_2D, wTexture);
+            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_S, _context.REPEAT);
+            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_T, _context.REPEAT);
+            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MIN_FILTER, _context.LINEAR);
+            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MAG_FILTER, _context.LINEAR);
 
             // Upload the image into the texture.
-            context.TexImage2D(context.TEXTURE_2D, 0, context.RGBA, context.RGBA, context.UNSIGNED_BYTE, texture.@internal);
-            var resolutionLocation = context.GetUniformLocation(program, "u_resolution");
-            context.UseProgram(program);
-            context.EnableVertexAttribArray(positionLocation);
-            context.BindBuffer(context.ARRAY_BUFFER, positionBuffer);
-            context.VertexAttribPointer(positionLocation, 2, context.FLOAT, false, 0, 0);
-            context.EnableVertexAttribArray(texCoordLocation);
-            context.BindBuffer(context.ARRAY_BUFFER, texCoordBuffer);
-            context.VertexAttribPointer(texCoordLocation, 2, context.FLOAT, false, 0, 0);
-            context.Uniform2f(resolutionLocation, context.Canvas.Width, context.Canvas.Height);
-            context.DrawArrays(context.TRIANGLES, 0, 6);
+            _context.TexImage2D(_context.TEXTURE_2D, 0, _context.RGBA, _context.RGBA, _context.UNSIGNED_BYTE, texture.@internal);
+            var resolutionLocation = _context.GetUniformLocation(program, "u_resolution");
+            _context.UseProgram(program);
+            _context.EnableVertexAttribArray(positionLocation);
+            _context.BindBuffer(_context.ARRAY_BUFFER, positionBuffer);
+            _context.VertexAttribPointer(positionLocation, 2, _context.FLOAT, false, 0, 0);
+            _context.EnableVertexAttribArray(texCoordLocation);
+            _context.BindBuffer(_context.ARRAY_BUFFER, texCoordBuffer);
+            _context.VertexAttribPointer(texCoordLocation, 2, _context.FLOAT, false, 0, 0);
+            _context.Uniform2f(resolutionLocation, _context.Canvas.Width, _context.Canvas.Height);
+            _context.DrawArrays(_context.TRIANGLES, 0, 6);
         }
         public void DrawString(SpriteFont spriteFont, string value, Vector2 position, Color color)
         {
             AssertState(BeginState.Begin, BeginState.Begin);
-            textCanvas.Font = spriteFont._name;
-            textCanvas.FillStyle = $"rgba({color.R}, {color.G}, {color.B}, {color.A})";
-            textCanvas.FillText(value, (uint)position.X, (uint)(position.Y + spriteFont._height));
+            _textCanvas.Font = spriteFont._name;
+            _textCanvas.FillStyle = $"rgba({color.R}, {color.G}, {color.B}, {color.A})";
+            float y = position.Y;
+            foreach (var cVal in value.Split('\n'))
+            {
+                float x = position.X;
+                foreach (var sItem in cVal)
+                {
+                    _textCanvas.FillText(sItem.ToString(), (int)x, (uint)(y + spriteFont._height));
+                    x += (float)_textCanvas.MeasureText(sItem.ToString()).Width;
+                    x += (float)spriteFont._spacing;
+                }
+                y += spriteFont.MeasureString(cVal).Y;
+            }
         }
     }
 }

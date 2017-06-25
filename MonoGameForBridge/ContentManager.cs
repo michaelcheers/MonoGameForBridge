@@ -31,6 +31,7 @@ namespace Microsoft.Xna.Framework.Content
                 if (fonts.ContainsKey(value))
                     return (T)(object)fonts[value];
                 SpriteFont r = new SpriteFont(@internal.GraphicsDevice);
+                LoadSpriteFont(value, r);
                 fonts.Add(value, r);
                 return (T)(object)r;
             }
@@ -45,11 +46,6 @@ namespace Microsoft.Xna.Framework.Content
                 image.Value.@internal = await AwaitLoadImage(image.Key);
                 @internal.progress.Value++;
             }
-            foreach (var font in fonts)
-            {
-                await AwaitLoadSpriteFont(font.Key, font.Value);
-                @internal.progress.Value++;
-            }
         }
 
         internal Task<HTMLImageElement> AwaitLoadImage (string value)
@@ -62,20 +58,12 @@ namespace Microsoft.Xna.Framework.Content
             image.OnLoad = e => result.SetResult(image);
             return result.Task;
         }
-        internal async Task AwaitLoadSpriteFont (string value, SpriteFont font)
+        internal void LoadSpriteFont (string value, SpriteFont font)
         {
             var request = new Bridge.Html5.XMLHttpRequest();
-            request.Open("GET", $"{RootDirectory}/{value}.spritefont");
+            request.Open("GET", $"{RootDirectory}/{value}.spritefont", false);
             request.Send((string)null);
-            var task = new TaskCompletionSource<string>();
-            request.OnReadyStateChange = () =>
-            {
-                if (request.ReadyState == Bridge.Html5.AjaxReadyState.Done)
-                    if (request.Status == 200)
-                        task.SetResult(request.ResponseText);
-            };
-            var domParser = new Bridge.Html5.DOMParser();
-            var xmlDoc = domParser.ParseFromString(await task.Task, "text/xml");
+            var xmlDoc = (new Bridge.Html5.DOMParser()).ParseFromString(request.ResponseText, "text/xml");
             string fontName = xmlDoc.GetElementsByTagName("FontName")[0].ChildNodes[0].NodeValue;
             double fontSize = double.Parse(xmlDoc.GetElementsByTagName("Size")[0].ChildNodes[0].NodeValue);
             InStyle style = (InStyle)Enum.Parse(typeof(InStyle), xmlDoc.GetElementsByTagName("Style")[0].ChildNodes[0].NodeValue);
@@ -88,6 +76,7 @@ namespace Microsoft.Xna.Framework.Content
             resultVal += fontSize + "px ";
             resultVal += fontName;
             font._name = resultVal;
+            font._spacing = double.Parse(xmlDoc.GetElementsByTagName("Spacing")[0].ChildNodes[0].NodeValue);
         }
         [Flags]
         enum InStyle

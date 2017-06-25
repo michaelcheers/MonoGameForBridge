@@ -126,23 +126,25 @@ namespace Farie_Alchemy
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            items = new Dictionary<MythicalItem, Texture2D>((int)MythicalItem.Count);
-            items.Add(MythicalItem.cake, Content.Load<Texture2D>("cake"));
-            items.Add(MythicalItem.carrot, Content.Load<Texture2D>("carrot"));
-            items.Add(MythicalItem.pony, Content.Load<Texture2D>("horse"));
-            items.Add(MythicalItem.duck, Content.Load<Texture2D>("duck")); 
-            items.Add(MythicalItem.rabbit, Content.Load<Texture2D>("rabbit"));
-            items.Add(MythicalItem.star, Content.Load<Texture2D>("star"));
-            items.Add(MythicalItem.unicorn, Content.Load<Texture2D>("unicorn"));
-            items.Add(MythicalItem.dragon, Content.Load<Texture2D>("dragon"));
-            items.Add(MythicalItem.Jackpot, Content.Load<Texture2D>("gold"));
-            items.Add(MythicalItem.moon, Content.Load<Texture2D>("moon"));
-            items.Add(MythicalItem.earth, Content.Load<Texture2D>("earth"));
-            items.Add(MythicalItem.sun, Content.Load<Texture2D>("sun"));
-            items.Add(MythicalItem.god, Content.Load<Texture2D>("god"));
-            items.Add(MythicalItem.wish, Content.Load<Texture2D>("wish"));
-            items.Add(MythicalItem.angel, Content.Load<Texture2D>("angel"));
-            items.Add(MythicalItem.Empty, null);
+            items = new Dictionary<MythicalItem, Texture2D>((int)MythicalItem.Count)
+            {
+                { MythicalItem.cake, Content.Load<Texture2D>("cake") },
+                { MythicalItem.carrot, Content.Load<Texture2D>("carrot") },
+                { MythicalItem.pony, Content.Load<Texture2D>("horse") },
+                { MythicalItem.duck, Content.Load<Texture2D>("duck") },
+                { MythicalItem.rabbit, Content.Load<Texture2D>("rabbit") },
+                { MythicalItem.star, Content.Load<Texture2D>("star") },
+                { MythicalItem.unicorn, Content.Load<Texture2D>("unicorn") },
+                { MythicalItem.dragon, Content.Load<Texture2D>("dragon") },
+                { MythicalItem.Jackpot, Content.Load<Texture2D>("gold") },
+                { MythicalItem.moon, Content.Load<Texture2D>("moon") },
+                { MythicalItem.earth, Content.Load<Texture2D>("earth") },
+                { MythicalItem.sun, Content.Load<Texture2D>("sun") },
+                { MythicalItem.god, Content.Load<Texture2D>("god") },
+                { MythicalItem.wish, Content.Load<Texture2D>("wish") },
+                { MythicalItem.angel, Content.Load<Texture2D>("angel") },
+                { MythicalItem.Empty, null }
+            };
             black = Content.Load<Texture2D>("black");
             //bgEffect = Content.Load<SoundEffect>("song");
             pointForm = Content.Load<SpriteFont>("Points");

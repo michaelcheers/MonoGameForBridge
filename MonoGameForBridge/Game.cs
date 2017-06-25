@@ -40,7 +40,7 @@ namespace Microsoft.Xna.Framework
             LoadContent();
             Bridge.Html5.Document.Body.AppendChild(progress = new Bridge.Html5.HTMLProgressElement
             {
-                Max = Content.fonts.Count + Content.images.Count
+                Max = Content.images.Count
             });
             await Content.AwaitLoad();
             if (GraphicsDevice.graphicsDeviceManager.IsFullScreen)
