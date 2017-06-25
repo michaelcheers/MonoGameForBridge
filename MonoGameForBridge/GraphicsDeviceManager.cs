@@ -11,7 +11,7 @@ namespace Microsoft.Xna.Framework
         internal Game @internal;
         public bool IsFullScreen { get; set; }
         public int PreferredBackBufferWidth { get; set; } = 800;
-        public int PreferredBackBufferHeight { get; set; } = 400;
+        public int PreferredBackBufferHeight { get; set; } = 600;
         public GraphicsDeviceManager (Game game)
         {
             (@internal = game).GraphicsDevice.graphicsDeviceManager = this;

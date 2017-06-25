@@ -27,11 +27,21 @@ namespace Microsoft.Xna.Framework
         protected virtual void UnloadContent() { }
         protected virtual void Draw(GameTime gameTime) { }
         protected virtual void Update(GameTime gameTime) { }
+        internal Bridge.Html5.HTMLProgressElement progress;
         public async void Run ()
         {
+            Bridge.Html5.Document.Body.AppendChild(new Bridge.Html5.HTMLHeadingElement
+            {
+                InnerHTML = "Please be patient while the game loads."
+            });
+            Bridge.Html5.Document.Body.AppendChild(new Bridge.Html5.HTMLBRElement());
             GraphicsDevice.Init();
             Initialize();
             LoadContent();
+            Bridge.Html5.Document.Body.AppendChild(progress = new Bridge.Html5.HTMLProgressElement
+            {
+                Max = Content.fonts.Count + Content.images.Count
+            });
             await Content.AwaitLoad();
             if (GraphicsDevice.graphicsDeviceManager.IsFullScreen)
             {
@@ -48,6 +58,8 @@ namespace Microsoft.Xna.Framework
                 Bridge.Html5.Document.OnClick = oldClick;
                 heading.Style.Display = Bridge.Html5.Display.None;
             }
+            else
+                Bridge.Html5.Document.Body.InnerHTML = string.Empty;
             var div = Bridge.Html5.Document.CreateElement("div");
             GraphicsDevice.@internal.Style.BackgroundColor = Bridge.Html5.HTMLColor.White;
             Bridge.Html5.Document.DocumentElement.Style.Cursor = IsMouseVisible ? Bridge.Html5.Cursor.Default : Bridge.Html5.Cursor.None;

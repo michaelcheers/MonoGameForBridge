@@ -13,19 +13,23 @@ namespace Microsoft.Xna.Framework.Content
         public string RootDirectory { get; set; } = "Content";
         internal Game @internal;
         internal ContentManager() { }
-        Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
-        Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
+        internal Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
+        internal Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
 
         public T Load<T> (string value)
         {
             if (typeof(T) == typeof(Texture2D))
             {
+                if (images.ContainsKey(value))
+                    return (T)(object)images[value];
                 Texture2D r = new Texture2D();
                 images.Add(value, r);
                 return (T)(object)r;
             }
             else if (typeof(T) == typeof(SpriteFont))
             {
+                if (fonts.ContainsKey(value))
+                    return (T)(object)fonts[value];
                 SpriteFont r = new SpriteFont(@internal.GraphicsDevice);
                 fonts.Add(value, r);
                 return (T)(object)r;
@@ -37,9 +41,15 @@ namespace Microsoft.Xna.Framework.Content
         internal async Task AwaitLoad ()
         {
             foreach (var image in images)
+            {
                 image.Value.@internal = await AwaitLoadImage(image.Key);
+                @internal.progress.Value++;
+            }
             foreach (var font in fonts)
+            {
                 await AwaitLoadSpriteFont(font.Key, font.Value);
+                @internal.progress.Value++;
+            }
         }
 
         internal Task<HTMLImageElement> AwaitLoadImage (string value)
