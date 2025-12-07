@@ -3,7 +3,7 @@
 
 namespace System
 {
-    [External, Convention(Notation.LowerCamelCase)]
+    [External, Convention(Notation.CamelCase)]
     [Name("Math")]
     public static class _Math
     {

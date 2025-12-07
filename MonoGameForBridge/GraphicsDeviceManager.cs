@@ -16,5 +16,17 @@ namespace Microsoft.Xna.Framework
         {
             (@internal = game).GraphicsDevice.graphicsDeviceManager = this;
         }
+
+        public void ToggleFullScreen()
+        {
+            IsFullScreen = !IsFullScreen;
+            // In browser, full screen toggle requires user interaction
+            // This is a stub - actual fullscreen is handled at game start
+        }
+
+        public void ApplyChanges()
+        {
+            // Stub for compatibility - changes are applied immediately in browser
+        }
     }
 }

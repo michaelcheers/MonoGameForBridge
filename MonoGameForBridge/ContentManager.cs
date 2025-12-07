@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Microsoft.Xna.Framework.Content
         internal ContentManager() { }
         internal Dictionary<string, Texture2D> images = new Dictionary<string, Texture2D>();
         internal Dictionary<string, SpriteFont> fonts = new Dictionary<string, SpriteFont>();
+        internal Dictionary<string, SoundEffect> sounds = new Dictionary<string, SoundEffect>();
 
         public T Load<T> (string value)
         {
@@ -35,6 +37,14 @@ namespace Microsoft.Xna.Framework.Content
                 fonts.Add(value, r);
                 return (T)(object)r;
             }
+            else if (typeof(T) == typeof(SoundEffect))
+            {
+                if (sounds.ContainsKey(value))
+                    return (T)(object)sounds[value];
+                SoundEffect r = new SoundEffect(@internal.audioContext);
+                sounds.Add(value, r);
+                return (T)(object)r;
+            }
             else
                 throw new NotImplementedException();
         }
@@ -44,6 +54,11 @@ namespace Microsoft.Xna.Framework.Content
             foreach (var image in images)
             {
                 image.Value.@internal = await AwaitLoadImage(image.Key);
+                @internal.progress.Value++;
+            }
+            foreach (var sound in sounds)
+            {
+                await sound.Value.LoadSound($"{RootDirectory}/{sound.Key}.wav");
                 @internal.progress.Value++;
             }
         }

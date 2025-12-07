@@ -14,19 +14,28 @@ namespace Microsoft.Xna.Framework
         public ContentManager Content { get; set; }
         public GraphicsDevice GraphicsDevice { get; set; }
         public bool IsMouseVisible { get; set; }
+        internal dynamic audioContext;
         public Game ()
         {
-            GraphicsDevice = new GraphicsDevice(this); 
+            GraphicsDevice = new GraphicsDevice(this);
             Content = new ContentManager
             {
                 @internal = this
             };
+            // Create Web Audio API context
+            Script.Write("this.audioContext = new (window.AudioContext || window.webkitAudioContext)();");
         }
         protected virtual void Initialize() { }
         protected virtual void LoadContent() { }
         protected virtual void UnloadContent() { }
         protected virtual void Draw(GameTime gameTime) { }
         protected virtual void Update(GameTime gameTime) { }
+
+        public void Exit()
+        {
+            // In browser, we can't really exit, just stop the game loop
+            Bridge.Html5.Document.Body.InnerHTML = "<h1>Game Exited</h1>";
+        }
         internal Bridge.Html5.HTMLProgressElement progress;
         public async void Run ()
         {
@@ -40,7 +49,7 @@ namespace Microsoft.Xna.Framework
             LoadContent();
             Bridge.Html5.Document.Body.AppendChild(progress = new Bridge.Html5.HTMLProgressElement
             {
-                Max = Content.images.Count
+                Max = Content.images.Count + Content.sounds.Count
             });
             await Content.AwaitLoad();
             if (GraphicsDevice.graphicsDeviceManager.IsFullScreen)

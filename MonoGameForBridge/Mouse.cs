@@ -33,5 +33,12 @@ namespace Microsoft.Xna.Framework.Input
         static ButtonState If(Buttons button) => bt.HasFlag(button) ? ButtonState.Pressed : ButtonState.Released;
         public static MouseState GetState () =>
             new MouseState(c.X, c.Y, 0, If(Buttons.Left), If(Buttons.Middle), If(Buttons.Right), If(Buttons.X1), If(Buttons.X2));
+
+        public static void SetPosition(int x, int y)
+        {
+            // Browser doesn't allow programmatic mouse position changes
+            // This is a stub for compatibility
+            c = new Point(x, y);
+        }
     }
 }

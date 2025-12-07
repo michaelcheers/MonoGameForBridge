@@ -184,8 +184,8 @@ void main() {
             }), _context.STATIC_DRAW);
             var wTexture = _context.CreateTexture();
             _context.BindTexture(_context.TEXTURE_2D, wTexture);
-            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_S, _context.REPEAT);
-            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_T, _context.REPEAT);
+            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_S, _context.CLAMP_TO_EDGE);
+            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_T, _context.CLAMP_TO_EDGE);
             _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MIN_FILTER, _context.LINEAR);
             _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MAG_FILTER, _context.LINEAR);
 
