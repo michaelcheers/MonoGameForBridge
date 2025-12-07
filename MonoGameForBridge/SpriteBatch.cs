@@ -182,15 +182,22 @@ void main() {
                 right, top,
                 right, bottom
             }), _context.STATIC_DRAW);
-            var wTexture = _context.CreateTexture();
-            _context.BindTexture(_context.TEXTURE_2D, wTexture);
-            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_S, _context.CLAMP_TO_EDGE);
-            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_T, _context.CLAMP_TO_EDGE);
-            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MIN_FILTER, _context.LINEAR);
-            _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MAG_FILTER, _context.LINEAR);
-
-            // Upload the image into the texture.
-            _context.TexImage2D(_context.TEXTURE_2D, 0, _context.RGBA, _context.RGBA, _context.UNSIGNED_BYTE, texture.@internal);
+            // Cache WebGL texture on first use
+            if (!texture._glTextureInitialized)
+            {
+                texture._glTexture = _context.CreateTexture();
+                _context.BindTexture(_context.TEXTURE_2D, texture._glTexture);
+                _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_S, _context.CLAMP_TO_EDGE);
+                _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_WRAP_T, _context.CLAMP_TO_EDGE);
+                _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MIN_FILTER, _context.LINEAR);
+                _context.TexParameteri(_context.TEXTURE_2D, _context.TEXTURE_MAG_FILTER, _context.LINEAR);
+                _context.TexImage2D(_context.TEXTURE_2D, 0, _context.RGBA, _context.RGBA, _context.UNSIGNED_BYTE, texture.@internal);
+                texture._glTextureInitialized = true;
+            }
+            else
+            {
+                _context.BindTexture(_context.TEXTURE_2D, texture._glTexture);
+            }
             var resolutionLocation = _context.GetUniformLocation(program, "u_resolution");
             _context.UseProgram(program);
             _context.EnableVertexAttribArray(positionLocation);
